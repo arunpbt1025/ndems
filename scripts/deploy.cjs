@@ -1,0 +1,1 @@
+const hre = require('hardhat'); async function main() { const Evidence = await hre.ethers.deployContract('EvidenceRegistry'); await Evidence.waitForDeployment(); console.log('Contract deployed to:', await Evidence.getAddress()); } main().catch((error) => { console.error(error); process.exitCode = 1; });

@@ -1,0 +1,34 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+contract EvidenceRegistry {
+    struct Evidence {
+        string caseId;
+        string docHash;
+        string officerName;
+        uint256 timestamp;
+        bool exists;
+    }
+
+    mapping(string => Evidence) private evidences;
+    string[] private caseIds;
+
+    event EvidenceRegistered(string indexed caseId, string docHash, string officerName, uint256 timestamp);
+
+    function registerDocument(string memory _caseId, string memory _docHash, string memory _officerName) public {
+        if (!evidences[_caseId].exists) {
+            caseIds.push(_caseId);
+        }
+        evidences[_caseId] = Evidence(_caseId, _docHash, _officerName, block.timestamp, true);
+        emit EvidenceRegistered(_caseId, _docHash, _officerName, block.timestamp);
+    }
+
+    function getDocument(string memory _caseId) public view returns (string memory, string memory, string memory, uint256, bool) {
+        Evidence memory e = evidences[_caseId];
+        return (e.caseId, e.docHash, e.officerName, e.timestamp, e.exists);
+    }
+
+    function getAllCases() public view returns (string[] memory) {
+        return caseIds;
+    }
+}

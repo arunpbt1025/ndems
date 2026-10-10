@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NDEMS | National Digital Evidence Management System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    
+    /* Premium Cyber-Forensic National Theme */
+    .hero-cyber-theme {
+      background-color: #f8fafc;
+      background-image: 
+        radial-gradient(at 100% 0%, rgba(2, 132, 199, 0.15) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(14, 165, 233, 0.10) 0px, transparent 50%),
+        radial-gradient(rgba(2, 132, 199, 0.12) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 24px 24px;
+      position: relative;
+    }
+
+    @keyframes dashboardEntrance {
+      0% {
+        opacity: 0;
+        transform: translateY(14px) scale(0.99);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .animate-dashboard-in {
+      animation: dashboardEntrance 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @media print {
+      body * { visibility: hidden !important; }
+      #sec63CertificateModal, #sec63CertificateModal * { visibility: visible !important; }
+      #sec63CertificateModal { 
+        position: fixed !important; 
+        left: 0 !important; 
+        top: 0 !important; 
+        width: 100% !important; 
+        margin: 0 !important; 
+        padding: 24px !important;
+        background: white !important;
+      }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-[#f8fafc] text-slate-800 min-h-screen flex flex-col antialiased selection:bg-blue-600 selection:text-white">
+
+  <!-- TOP BAR -->
+  <div class="bg-[#0b1e38] text-slate-300 text-[11px] px-6 lg:px-12 py-1.5 flex justify-between items-center border-b border-slate-800 z-50">
+    <div class="font-medium tracking-wide">
+      भारत सरकार | <span class="text-slate-400">Government of India</span>
+    </div>
+    <div class="flex items-center space-x-5 text-[11px] font-medium">
+      <span class="text-emerald-400 font-mono font-semibold">● BSA 2023 Sec 63</span>
+      <span class="text-slate-600">|</span>
+      <div id="authStatusBadge" class="inline-block bg-slate-800 text-slate-300 px-2.5 py-0.5 rounded font-mono text-[10px]">
+        Public Mode
+      </div>
+      <span class="text-slate-600">|</span>
+      <span class="hover:text-white cursor-pointer font-semibold">हिन्दी</span>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
+    <div class="max-w-[1550px] mx-auto px-6 lg:px-12 py-3.5 flex items-center justify-between">
+      
+      <!-- Clickable Logo -> Back to Home -->
+      <div class="flex items-center space-x-5 shrink-0 cursor-pointer" onclick="showView('home')">
+        <div class="flex items-center space-x-3.5">
+          <img class="h-12 w-auto object-contain block" src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" alt="Emblem">
+          <div class="leading-tight">
+            <div class="text-[13px] font-bold tracking-tight text-slate-900 whitespace-nowrap">Ministry of Home Affairs</div>
+            <div class="text-[11px] text-slate-500 font-medium mt-0.5 whitespace-nowrap">Government of India</div>
+          </div>
+        </div>
+        <div class="hidden md:block h-10 w-px bg-slate-200"></div>
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-[#082046] text-white flex items-center justify-center shadow-xs shrink-0">
+            <svg class="w-5 h-5 text-sky-400" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L4 5v6.09c0 5.05 3.41 9.76 8 10.91 4.59-1.15 8-5.86 8-10.91V5l-8-3zm0 2.18l6 2.25v4.66c0 4.1-2.6 7.9-6 9.01-3.4-1.11-6-4.91-6-9.01V6.43l6-2.25z"/>
+            </svg>
+          </div>
+          <div class="leading-tight">
+            <div class="text-[18px] font-extrabold text-[#0052cc] tracking-tight leading-none">NDEMS</div>
+            <div class="text-[10px] font-bold text-slate-800 tracking-tight mt-1 whitespace-nowrap">National Digital Evidence Management System</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex items-center space-x-8">
+        <div class="hidden lg:flex items-center space-x-8 text-[13px] font-semibold text-slate-700 whitespace-nowrap">
+          <button onclick="showView('home')" id="navHomeBtn" class="text-[#0052cc] font-bold pb-1 transition border-b-2 border-[#0052cc]">Home</button>
+          <button onclick="checkAndOpenDashboard()" id="navDashboardBtn" class="hover:text-[#0052cc] pb-1 transition">Dashboard</button>
+          <button onclick="showView('services')" id="navServicesBtn" class="hover:text-[#0052cc] pb-1 transition">Services</button>
+          <button onclick="showView('resources')" id="navResourcesBtn" class="hover:text-[#0052cc] pb-1 transition">Resources</button>
+          <button onclick="showView('help')" id="navHelpBtn" class="hover:text-[#0052cc] pb-1 transition">Help &amp; Support</button>
+          <button onclick="showView('contact')" id="navContactBtn" class="hover:text-[#0052cc] pb-1 transition">Contact Us</button>
+        </div>
+
+        <!-- Auth Button -->
+        <div class="flex items-center space-x-3">
+          <button id="authActionBtn" onclick="openLoginModal()" class="bg-[#0052cc] hover:bg-blue-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg shadow-xs flex items-center space-x-1.5 transition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+            <span>Login</span>
+          </button>
+          <button id="logoutActionBtn" onclick="handleLogout()" class="text-xs text-red-600 hover:text-red-800 font-bold px-2 py-1 hidden transition">
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================== VIEW 1: PUBLIC LANDING PAGE ==================== -->
+  <main id="publicLandingView" class="flex-1 flex flex-col">
+    
+    <!-- Hero Section -->
+    <section class="hero-cyber-theme relative pt-12 pb-16 border-b border-slate-200 overflow-hidden">
+      <div class="max-w-[1550px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+        
+        <div class="lg:col-span-6 space-y-5">
+          <div class="inline-flex items-center space-x-2 bg-emerald-50/90 border border-emerald-300 text-emerald-800 text-[11px] font-bold px-3 py-1 rounded-full">
+            <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <span>SECURE • TRANSPARENT • TRUSTED</span>
+          </div>
+
+          <!-- Non-overlapping Clean Leading -->
+          <div class="space-y-1.5">
+            <h1 class="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-[#091e42] tracking-tight leading-snug">
+              Digital Evidence Management
+            </h1>
+            <div class="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-[#0052cc] tracking-tight leading-snug">
+              &amp; Chain of Custody
+            </div>
+          </div>
+
+          <p class="text-[13.5px] text-slate-600 leading-relaxed max-w-xl">
+            A secure and integrated platform to capture, preserve, track and audit digital evidence in accordance with the Bharatiya Sakshya Adhiniyam, 2023 (Section 63) ensuring admissibility, integrity and accountability.
+          </p>
+
+          <div class="flex items-center space-x-4 pt-2">
+            <button onclick="checkAndOpenDashboard()" class="bg-[#082046] hover:bg-[#0052cc] text-white text-xs font-semibold px-6 py-3 rounded-lg shadow-sm transition flex items-center space-x-2">
+              <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              <span>Access NDEMS</span>
+            </button>
+            <button onclick="showView('services')" class="bg-white hover:bg-slate-50 text-[#0052cc] border border-[#0052cc] text-xs font-semibold px-5 py-3 rounded-lg transition flex items-center space-x-2 shadow-2xs">
+              <span>Explore Services</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+          </div>
+
+          <div class="pt-2 flex items-center space-x-2 text-[11px] font-semibold text-slate-700">
+            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <span>Secure. Compliant. Built for Bharat.</span>
+          </div>
+        </div>
+
+        <!-- 3D Graphics Shield -->
+<!-- 3D Graphics Shield (Accurate Pointer Alignment) -->
+        <div class="lg:col-span-6 relative flex items-center justify-center lg:justify-end">
+          <div class="relative w-full max-w-[560px] h-[360px] flex items-center">
+            
+            <!-- Center Concentric Shield Graphics -->
+            <div class="relative w-[340px] h-[340px] shrink-0 flex items-center justify-center">
+              <div class="absolute w-64 h-64 bg-sky-400/20 rounded-full blur-3xl pointer-events-none"></div>
+
+              <svg class="w-full h-full" viewBox="0 0 340 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Concentric Rings -->
+                <circle cx="170" cy="170" r="150" stroke="#bae6fd" stroke-width="1.2" stroke-dasharray="4 6" opacity="0.6"/>
+                <circle cx="170" cy="170" r="132" stroke="#7dd3fc" stroke-width="1.5" opacity="0.75"/>
+                <circle cx="170" cy="170" r="118" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="8 4" opacity="0.85"/>
+                <circle cx="170" cy="170" r="102" stroke="#0284c7" stroke-width="1.8" opacity="0.9"/>
+                <circle cx="170" cy="170" r="78" fill="#e0f2fe" fill-opacity="0.35" stroke="#0284c7" stroke-width="1.2"/>
+
+                <!-- 1. Top Pointer -> Connects directly to Evidence Capture (Y: 60) -->
+                <path d="M 270 102 L 305 60 L 340 60" stroke="#38bdf8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <circle cx="270" cy="102" r="3" fill="#0284c7"/>
+
+                <!-- 2. Mid-Upper Pointer -> Connects directly to Chain of Custody (Y: 132) -->
+                <path d="M 296 142 L 315 132 L 340 132" stroke="#38bdf8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <circle cx="296" cy="142" r="3" fill="#0284c7"/>
+
+                <!-- 3. Mid-Lower Pointer -> Connects directly to Integrity Protection (Y: 208) -->
+                <path d="M 296 198 L 315 208 L 340 208" stroke="#38bdf8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <circle cx="296" cy="198" r="3" fill="#0284c7"/>
+
+                <!-- 4. Bottom Pointer -> Connects directly to Audit & Reports (Y: 280) -->
+                <path d="M 270 238 L 305 280 L 340 280" stroke="#38bdf8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <circle cx="270" cy="238" r="3" fill="#0284c7"/>
+
+                <!-- Central Security Shield -->
+                <path d="M 170 94 L 218 114 C 218 168 198 214 170 238 C 142 214 122 168 122 114 Z" fill="none" stroke="#38bdf8" stroke-width="2.5"/>
+                <path d="M 170 102 L 212 120 C 212 166 195 206 170 228 C 145 206 128 166 128 120 Z" fill="#082046" stroke="#ffffff" stroke-width="2.5"/>
+
+                <!-- Lock SVG Inside Shield -->
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M 170 142 C 164.2 142 159.5 146.7 159.5 152.5 L 159.5 158 L 157 158 C 154.8 158 153 159.8 153 162 L 153 181 C 153 183.2 154.8 185 157 185 L 183 185 C 185.2 185 187 183.2 187 181 L 187 162 C 187 159.8 185.2 158 183 158 L 180.5 158 L 180.5 152.5 C 180.5 146.7 175.8 142 170 142 Z M 175.5 158 L 164.5 158 L 164.5 152.5 C 164.5 149.5 167 147 170 147 C 173 147 175.5 149.5 175.5 152.5 L 175.5 158 Z" fill="#ffffff"/>
+              </svg>
+            </div>
+
+            <!-- Right Callout List (Matched Heights) -->
+            <div class="flex-1 flex flex-col justify-between h-[300px] pl-2 z-20">
+              
+              <!-- 1. Evidence Capture -->
+              <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-full bg-white border border-slate-200 shadow-xs flex items-center justify-center text-[#0052cc] shrink-0">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <div>
+                  <div class="text-[11px] font-extrabold text-[#091e42] tracking-wider uppercase">Evidence Capture</div>
+                  <div class="text-[10px] text-slate-500 font-medium">Secure digital collection</div>
+                </div>
+              </div>
+
+              <!-- 2. Chain of Custody -->
+              <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-full bg-white border border-slate-200 shadow-xs flex items-center justify-center text-[#0052cc] shrink-0">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                </div>
+                <div>
+                  <div class="text-[11px] font-extrabold text-[#091e42] tracking-wider uppercase">Chain of Custody</div>
+                  <div class="text-[10px] text-slate-500 font-medium">End-to-end tracking</div>
+                </div>
+              </div>
+
+              <!-- 3. Integrity Protection -->
+              <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-full bg-white border border-slate-200 shadow-xs flex items-center justify-center text-[#0052cc] shrink-0">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                </div>
+                <div>
+                  <div class="text-[11px] font-extrabold text-[#091e42] tracking-wider uppercase">Integrity Protection</div>
+                  <div class="text-[10px] text-slate-500 font-medium">Tamper-evident records</div>
+                </div>
+              </div>
+
+              <!-- 4. Audit & Reports -->
+              <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-full bg-white border border-slate-200 shadow-xs flex items-center justify-center text-[#0052cc] shrink-0">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <div>
+                  <div class="text-[11px] font-extrabold text-[#091e42] tracking-wider uppercase">Audit &amp; Reports</div>
+                  <div class="text-[10px] text-slate-500 font-medium">Comprehensive audit trails</div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4 Original Style Feature Cards (Restored) -->
+    <section class="max-w-[1550px] mx-auto px-6 lg:px-12 -mt-10 relative z-20">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+          <div class="flex items-start space-x-4">
+            <div class="w-12 h-12 rounded-xl bg-blue-50 text-[#0052cc] flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-[14px] text-slate-900">Integrity Protected</h3>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">Tamper-evident mechanisms ensure originality and integrity of evidence.</p>
+            </div>
+          </div>
+          <div class="w-8 h-1 bg-blue-600 rounded-full mt-4"></div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+          <div class="flex items-start space-x-4">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-[14px] text-slate-900">Legal Compliance</h3>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">Aligned with the Bharatiya Sakshya Adhiniyam, 2023, including Section 63 requirements.</p>
+            </div>
+          </div>
+          <div class="w-8 h-1 bg-emerald-600 rounded-full mt-4"></div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+          <div class="flex items-start space-x-4">
+            <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-[14px] text-slate-900">Role-Based Access</h3>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">Granular access control for investigators, forensic officers, prosecutors, and auditors.</p>
+            </div>
+          </div>
+          <div class="w-8 h-1 bg-purple-600 rounded-full mt-4"></div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+          <div class="flex items-start space-x-4">
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            </div>
+            <div>
+              <h3 class="font-bold text-[14px] text-slate-900">Audit &amp; Traceability</h3>
+              <p class="text-xs text-slate-500 mt-1 leading-relaxed">Real-time audit trails and complete traceability across the evidence lifecycle.</p>
+            </div>
+          </div>
+          <div class="w-8 h-1 bg-amber-600 rounded-full mt-4"></div>
+        </div>
+
+      </div>
+    </section>
+
+<!-- Metrics Counters (100% Responsive & Perfectly Centered) -->
+    <section class="max-w-7xl mx-auto px-6 py-12 w-full">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        <!-- Card 1: Evidence Records -->
+        <div class="bg-white rounded-xl border border-slate-200/90 p-5 shadow-xs hover:shadow-md transition-all duration-200 relative overflow-hidden group flex flex-col justify-between">
+          <div class="absolute top-0 left-0 right-0 h-[3px] bg-sky-500"></div>
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 border border-sky-100 group-hover:scale-105 transition-transform">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            </div>
+            <div class="min-w-0">
+              <div class="text-2xl font-black text-[#091e42] tracking-tight leading-none">12,548+</div>
+              <div class="text-[12px] font-bold text-slate-700 mt-1 truncate">Evidence Records</div>
+              <div class="text-[10px] text-slate-400 font-medium">Verified On-Chain</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Active Cases -->
+        <div class="bg-white rounded-xl border border-slate-200/90 p-5 shadow-xs hover:shadow-md transition-all duration-200 relative overflow-hidden group flex flex-col justify-between">
+          <div class="absolute top-0 left-0 right-0 h-[3px] bg-emerald-500"></div>
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100 group-hover:scale-105 transition-transform">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+            </div>
+            <div class="min-w-0">
+              <div class="text-2xl font-black text-[#091e42] tracking-tight leading-none">1,284</div>
+              <div class="text-[12px] font-bold text-slate-700 mt-1 truncate">Active Cases</div>
+              <div class="text-[10px] text-slate-400 font-medium">Under Investigation</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Audit Events -->
+        <div class="bg-white rounded-xl border border-slate-200/90 p-5 shadow-xs hover:shadow-md transition-all duration-200 relative overflow-hidden group flex flex-col justify-between">
+          <div class="absolute top-0 left-0 right-0 h-[3px] bg-indigo-500"></div>
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-100 group-hover:scale-105 transition-transform">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </div>
+            <div class="min-w-0">
+              <div class="text-2xl font-black text-[#091e42] tracking-tight leading-none">48,921</div>
+              <div class="text-[12px] font-bold text-slate-700 mt-1 truncate">Audit Events</div>
+              <div class="text-[10px] text-slate-400 font-medium">Cryptographic Logs</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Authorized Users -->
+        <div class="bg-white rounded-xl border border-slate-200/90 p-5 shadow-xs hover:shadow-md transition-all duration-200 relative overflow-hidden group flex flex-col justify-between">
+          <div class="absolute top-0 left-0 right-0 h-[3px] bg-amber-500"></div>
+          <div class="flex items-center space-x-3.5">
+            <div class="w-11 h-11 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 border border-amber-100 group-hover:scale-105 transition-transform">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            </div>
+            <div class="min-w-0">
+              <div class="text-2xl font-black text-[#091e42] tracking-tight leading-none">3,426</div>
+              <div class="text-[12px] font-bold text-slate-700 mt-1 truncate">Authorized Users</div>
+              <div class="text-[10px] text-slate-400 font-medium">Police &amp; Forensics</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    <!-- Full Government Footer -->
+    <footer class="bg-[#0b1e38] text-white pt-12 pb-8 border-t border-slate-800 mt-auto">
+      <div class="max-w-[1550px] mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-10 border-b border-slate-800 text-xs">
+        
+        <div class="space-y-3 lg:col-span-1">
+          <div class="flex items-center space-x-2">
+            <img class="h-8 w-auto filter invert brightness-0" src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" alt="Emblem">
+            <div>
+              <div class="font-bold text-white text-[11px]">Ministry of Home Affairs</div>
+              <div class="text-[10px] text-slate-400">Government of India</div>
+            </div>
+          </div>
+          <p class="text-slate-400 leading-relaxed text-[11px]">
+            Strengthening the criminal justice system through technology, transparency and trust.
+          </p>
+          <div style="display: flex; gap: 12px; margin-top: 14px; align-items: center;">
+                <!-- X (Twitter) -->
+                <a href="#" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #3b6b9d; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="#ffffff">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                  </div>
+                </a>
+
+                <!-- YouTube -->
+                <a href="#" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background-color: #cc2b2b; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#ffffff">
+                      <polygon points="9.5,7.5 16.5,12 9.5,16.5"/>
+                    </svg>
+                  </div>
+                </a>
+
+                <!-- LinkedIn -->
+                <a href="#" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                  <div style="width: 32px; height: 32px; border-radius: 7px; background-color: #0077b5; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#ffffff">
+                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.53 1.53 0 1 0 0-3.06 1.53 1.53 0 0 0 0 3.06m1.39 9.74V10.13H5.07v8.37h2.78z"/>
+                    </svg>
+                  </div>
+                </a>
+              </div>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white uppercase tracking-wider text-[11px] mb-3">Important Links</h4>
+          <ul class="space-y-2 text-slate-400 text-[11px]">
+            <li><a href="#" class="hover:text-white transition">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-white transition">Terms of Use</a></li>
+            <li><a href="#" class="hover:text-white transition">Accessibility Statement</a></li>
+            <li><a href="#" class="hover:text-white transition">Website Policies</a></li>
+            <li><a href="#" class="hover:text-white transition">Sitemap</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white uppercase tracking-wider text-[11px] mb-3">Resources</h4>
+          <ul class="space-y-2 text-slate-400 text-[11px]">
+            <li><a href="#" class="hover:text-white transition">User Manual</a></li>
+            <li><a href="#" class="hover:text-white transition">Standard Operating Procedures (SOPs)</a></li>
+            <li><a href="#" class="hover:text-white transition">Guidelines</a></li>
+            <li><a href="#" class="hover:text-white transition">FAQs</a></li>
+            <li><a href="#" class="hover:text-white transition">Legal Framework</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white uppercase tracking-wider text-[11px] mb-3">Help &amp; Support</h4>
+          <ul class="space-y-2 text-slate-400 text-[11px]">
+            <li><a href="#" class="hover:text-white transition">Helpdesk</a></li>
+            <li><a href="#" class="hover:text-white transition">Support Portal</a></li>
+            <li><a href="#" class="hover:text-white transition">Feedback / Grievance</a></li>
+            <li><a href="#" class="hover:text-white transition">Contact Us</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-white uppercase tracking-wider text-[11px] mb-3">Contact Us</h4>
+          <div class="space-y-1.5 text-slate-400 text-[11px]">
+            <p>Ministry of Home Affairs<br>North Block, New Delhi - 110001</p>
+            <p>Email: <a href="mailto:helpdesk@ndems.gov.in" class="hover:text-white">helpdesk@ndems.gov.in</a></p>
+            <p>Toll Free: 1800-11-2746<br>(10:00 AM - 06:00 PM)</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="max-w-[1550px] mx-auto px-6 lg:px-12 pt-6 flex flex-wrap justify-between items-center text-[11px] text-slate-500">
+        <div>NDEMS — National Digital Evidence Management System &bull; AIORI-3 PS-019 &bull; Team Numera 2.0 (TC-072)</div>
+        <div>Last Updated: October 2026 &bull; Government of India</div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ==================== VIEW 2: DEDICATED ADMIN DASHBOARD ==================== -->
+  <main id="adminDashboardView" class="hidden flex-1 max-w-[1550px] mx-auto w-full px-6 lg:px-12 py-8 space-y-8 animate-dashboard-in">
+    
+    <!-- Top Action Header -->
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-wrap justify-between items-center gap-4">
+      <div>
+        <div class="flex items-center space-x-2.5">
+          <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+          <h2 class="text-xl font-extrabold text-[#091e42]">NDEMS Audit Portal</Portal></h2>
+        </div>
+        <p class="text-xs text-slate-500 mt-1">Logged in Officer: <strong class="text-sky-700 font-bold">Arun</strong> &bull; Multi-Modal Validation &bull; Section 63 BSA Certification</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="document.getElementById('uploadModal').classList.remove('hidden')" class="bg-[#0052cc] hover:bg-blue-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg shadow-sm flex items-center space-x-2 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          <span>+ Ingest Evidence to Ledger</span>
+        </button>
+        <button onclick="showView('home')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-4 py-2.5 rounded-lg border border-slate-300 transition">
+          &larr; Exit to Public Portal
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Inspection Console -->
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+      <div class="bg-[#082046] text-white px-8 py-4 flex justify-between items-center">
+        <div class="text-sm font-bold flex items-center space-x-2">
+          <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <span>Live Forensic Comparator &amp; Privacy Discovery Engine</span>
+        </div>
+        <span class="text-xs text-sky-300 font-mono">Ethereum Node (8545) Active</span>
+      </div>
+
+      <div class="p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left: Upload Test File -->
+        <div class="lg:col-span-5 space-y-4 border-b lg:border-b-0 lg:border-r border-slate-200 pb-8 lg:pb-0 lg:pr-8">
+          <div>
+            <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-tight">Step 1: Inspect Suspicious / Court Evidence</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Accepts Certificate (PDF), WhatsApp Chat (TXT), or CCTV Image (JPG, JPEG, PNG).</p>
+          </div>
+
+          <form id="verifyForm" onsubmit="handleVerify(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Target Case ID</label>
+              <input type="text" id="vCaseId" required placeholder="e.g. CASE-2019-001" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-sky-500 focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Select Evidence File (Photo or Document)</label>
+              <div class="border-2 border-dashed border-slate-300 hover:border-sky-500 rounded-xl p-6 text-center bg-slate-50 hover:bg-slate-100 transition cursor-pointer" onclick="document.getElementById('vFile').click()">
+                <svg class="w-8 h-8 text-sky-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                <div class="text-xs font-bold text-slate-700" id="vFileLabel">Click to select Certificate, Chat Log, or CCTV Frame</div>
+                <div class="text-[10px] text-slate-500 mt-1">Accepts PDF, TXT, LOG, JPG, JPEG, PNG</div>
+                <input type="file" id="vFile" required accept=".pdf,.txt,.log,.jpg,.jpeg,.png" class="hidden" onchange="document.getElementById('vFileLabel').innerText = this.files[0].name">
+              </div>
+            </div>
+
+            <button type="submit" id="vBtn" class="w-full py-3 bg-[#082046] hover:bg-[#0052cc] text-white font-bold rounded-lg text-xs transition shadow-sm flex items-center justify-center space-x-2">
+              <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+              <span>Run Deep Cryptographic &amp; Privacy Audit</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Right: Forensic Diagnostic Findings -->
+        <div class="lg:col-span-7 flex flex-col justify-between space-y-5">
+          <div>
+            <div class="flex justify-between items-center pb-2 border-b border-slate-200">
+              <h3 class="text-sm font-extrabold text-slate-900 tracking-tight">Step 2: Real-Time Forensic Diagnostics</h3>
+              <span id="inspectBadge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600 uppercase">Awaiting Inspection</span>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyInspectBox" class="py-14 text-center text-slate-400 text-xs">
+              <svg class="w-10 h-10 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              Select Target Case ID and Evidence file on the left to run mathematical digest &amp; PII audit.
+            </div>
+
+            <!-- Result Box -->
+            <div id="inspectionResultBox" class="hidden mt-4 space-y-4">
+              
+              <!-- Top Banner -->
+              <div id="verdictBanner" class="p-4 rounded-xl border flex items-start justify-between">
+                <div>
+                  <div id="verdictTitle" class="text-sm font-extrabold uppercase tracking-wide"></div>
+                  <div id="verdictSubtitle" class="text-xs mt-0.5 font-medium"></div>
+                </div>
+                <span id="verdictTag" class="text-[10px] font-mono font-bold px-2.5 py-1 rounded uppercase"></span>
+              </div>
+
+              <!-- Structural Diagnostics Table -->
+              <div class="border border-slate-200 rounded-xl overflow-hidden text-xs">
+                <div class="bg-slate-100 px-4 py-2 border-b border-slate-200 font-bold text-slate-700 flex justify-between">
+                  <span>Structural Integrity &amp; Format Verification:</span>
+                  <span id="resDocType" class="text-sky-700 font-semibold font-mono"></span>
+                </div>
+                <table class="w-full text-left text-[11px] font-sans">
+                  <thead class="bg-slate-50 text-slate-500 border-b">
+                    <tr>
+                      <th class="py-1.5 px-3">Metric</th>
+                      <th class="py-1.5 px-3">Registered On-Chain</th>
+                      <th class="py-1.5 px-3">Inspected File</th>
+                      <th class="py-1.5 px-3">Integrity Verdict</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fieldComparisonTbody" class="divide-y divide-slate-100 bg-white"></tbody>
+                </table>
+              </div>
+
+              <!-- Hashes Box -->
+              <div class="border border-slate-200 rounded-xl p-3.5 bg-slate-50 space-y-1.5 font-mono text-[11px]">
+                <div>
+                  <span class="text-slate-500 font-sans font-bold">On-Chain Ledger Hash:</span>
+                  <div id="resLedgerHash" class="text-slate-800 break-all bg-white p-1.5 rounded border border-slate-200 mt-0.5"></div>
+                </div>
+                <div>
+                  <span class="text-slate-500 font-sans font-bold">Inspected File SHA-256:</span>
+                  <div id="resCurrentHash" class="text-slate-800 break-all bg-white p-1.5 rounded border border-slate-200 mt-0.5"></div>
+                </div>
+              </div>
+
+              <!-- Issues List -->
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1.5">
+                <div class="font-extrabold text-slate-900 flex items-center space-x-1.5">
+                  <svg class="w-4 h-4 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <span>Identified Forensic Findings &amp; Issues:</span>
+                </div>
+                <ul id="resIssuesList" class="list-disc pl-5 text-slate-700 space-y-1 font-medium text-[11px]"></ul>
+              </div>
+
+              <!-- PII Discovery (PS-019) -->
+              <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1.5">
+                <div class="font-extrabold text-slate-900 flex items-center space-x-1.5">
+                  <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                  <span>Personal-Data Discovery &amp; Privacy Audit (DPDP Act 2023):</span>
+                </div>
+                <ul id="resPiiList" class="list-disc pl-5 text-slate-700 space-y-1 font-medium text-[11px]"></ul>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom: Generate Certificate Button -->
+          <div class="pt-3 border-t border-slate-200">
+            <button id="openReportBtn" disabled onclick="openSec63Report()" class="w-full py-3 bg-slate-200 text-slate-400 font-bold rounded-lg text-xs cursor-not-allowed transition flex items-center justify-center space-x-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+              <span>Generate Official Section 63 BSA Compliance Certificate (PDF)</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- On-Chain Evidence Ledger Table with Report & Delete Actions -->
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6 space-y-4">
+      <div class="flex justify-between items-center">
+        <div>
+          <h3 class="text-sm font-extrabold text-[#091e42] tracking-tight uppercase">Immutable Blockchain Evidence Ledger</h3>
+          <p class="text-xs text-slate-500">Live Smart Contract State on Ethereum Local Node (Port 8545)</p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <span class="text-xs font-mono font-bold text-sky-700 bg-sky-50 border border-sky-200 px-3 py-1 rounded-md" id="ledgerCountBadge">0 Records</span>
+          <button onclick="loadLedger()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-md border border-slate-300 transition">Refresh</button>
+        </div>
+      </div>
+
+      <div class="border border-slate-200 rounded-xl overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="bg-slate-50 text-slate-700 font-bold border-b border-slate-200 text-[11px] uppercase tracking-wider">
+              <th class="py-3 px-3">Case ID</th>
+              <th class="py-3 px-3">Evidence File Name</th>
+              <th class="py-3 px-3">Media Category</th>
+              <th class="py-3 px-3">SHA-256 Digest</th>
+              <th class="py-3 px-3">Custodian Officer</th>
+              <th class="py-3 px-3">BSA Admissibility</th>
+              <th class="py-3 px-3 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="ledgerTableBody" class="divide-y divide-slate-100 font-mono text-[11px] bg-white">
+            <tr><td colspan="7" class="py-6 text-center text-slate-400 font-sans">Loading ledger records...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==================== VIEW 3: SERVICES VIEW ==================== -->
+  <main id="servicesView" class="hidden flex-1 max-w-[1550px] mx-auto w-full px-6 lg:px-12 py-12 space-y-8 animate-dashboard-in">
+    <div class="border-b border-slate-200 pb-5">
+      <h2 class="text-2xl font-extrabold text-[#091e42]">Forensic &amp; Evidentiary Services</h2>
+      <p class="text-xs text-slate-500 mt-1">Authorized digital evidence lifecycle solutions under Bharatiya Sakshya Adhiniyam, 2023.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+        <div class="w-10 h-10 rounded-lg bg-sky-50 text-sky-700 flex items-center justify-center font-bold text-lg">1</div>
+        <h3 class="font-bold text-slate-900 text-sm">Automated Section 63 Certification</h3>
+        <p class="text-xs text-slate-500 leading-relaxed">Generates Schedule Part A &amp; Part B statutory certificates for secondary electronic records ready for judicial submission.</p>
+      </div>
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+        <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-lg">2</div>
+        <h3 class="font-bold text-slate-900 text-sm">DPDP Personal-Data Discovery</h3>
+        <p class="text-xs text-slate-500 leading-relaxed">Heuristic detection and automated classification of personal identifiers across forensic dumps to protect citizen privacy.</p>
+      </div>
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+        <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-lg">3</div>
+        <h3 class="font-bold text-slate-900 text-sm">Immutable Blockchain Custody</h3>
+        <p class="text-xs text-slate-500 leading-relaxed">Anchors mathematical fingerprints directly to a distributed Ethereum ledger ensuring permanent proof against evidence modification.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ==================== VIEW 4: RESOURCES VIEW ==================== -->
+  <main id="resourcesView" class="hidden flex-1 max-w-[1550px] mx-auto w-full px-6 lg:px-12 py-12 space-y-6 animate-dashboard-in">
+    <div class="border-b border-slate-200 pb-5">
+      <h2 class="text-2xl font-extrabold text-[#091e42]">Standard Operating Procedures &amp; Statutory Guidelines</h2>
+      <p class="text-xs text-slate-500 mt-1">Official forensic protocols for state law enforcement &amp; judicial agencies.</p>
+    </div>
+    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 text-xs text-slate-700 leading-relaxed">
+      <div class="font-bold text-sm text-[#091e42]">Key Statutory Standards:</div>
+      <p>&bull; <strong>Bharatiya Sakshya Adhiniyam, 2023 (Section 63):</strong> Mandates that any electronic record must carry an immutable cryptographic hash and custodian declaration before court admission.</p>
+      <p>&bull; <strong>Digital Personal Data Protection Act, 2023:</strong> Mandates strict discovery and access restriction for citizen identifiers present in surveillance and messaging records.</p>
+      <p>&bull; <strong>RFC 6234 (SHA-256 Digest Standard):</strong> Prescribes collision-resistant 256-bit hashing as the foundational mathematical fingerprint.</p>
+    </div>
+  </main>
+
+  <!-- ==================== VIEW 5: HELP & SUPPORT VIEW ==================== -->
+  <main id="helpView" class="hidden flex-1 max-w-[1550px] mx-auto w-full px-6 lg:px-12 py-12 space-y-6 animate-dashboard-in">
+    <div class="border-b border-slate-200 pb-5">
+      <h2 class="text-2xl font-extrabold text-[#091e42]">NDEMS Support &amp; Technical Helpdesk</h2>
+      <p class="text-xs text-slate-500 mt-1">24x7 Assistance for Law Enforcement Investigators and Forensic Analysts.</p>
+    </div>
+    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-3 text-xs text-slate-700">
+      <p><strong>Technical Assistance Toll-Free:</strong> 1800-11-2746 (Toll-Free)</p>
+      <p><strong>Official Support Desk:</strong> support@ndems.gov.in</p>
+      <p><strong>Operational Timings:</strong> 24 Hours x 7 Days</p>
+    </div>
+  </main>
+
+  <!-- ==================== VIEW 6: CONTACT US VIEW ==================== -->
+  <main id="contactView" class="hidden flex-1 max-w-[1550px] mx-auto w-full px-6 lg:px-12 py-12 space-y-6 animate-dashboard-in">
+    <div class="border-b border-slate-200 pb-5">
+      <h2 class="text-2xl font-extrabold text-[#091e42]">Contact Ministry of Home Affairs</h2>
+      <p class="text-xs text-slate-500 mt-1">Cyber &amp; Information Security Division (C&amp;IS), New Delhi.</p>
+    </div>
+    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-2 text-xs text-slate-700">
+      <p><strong>Address:</strong> North Block, Central Secretariat, New Delhi, Delhi 110001</p>
+      <p><strong>Team:</strong> Numera 2.0 (TC-072) &bull; AIORI-3 Track</p>
+      <p><strong>Lead:</strong> Arun Bharti</p>
+    </div>
+  </main>
+
+  <!-- MODAL: LOGIN POPUP -->
+  <div id="loginModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-[#082046] text-white flex items-center justify-center">
+            <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-extrabold text-slate-900">Officer Authentication</h3>
+            <p class="text-[10px] text-slate-500 font-medium">Ministry of Home Affairs &bull; NDEMS</p>
+          </div>
+        </div>
+        <button onclick="document.getElementById('loginModal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
+      </div>
+
+      <form onsubmit="handleOfficerLogin(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Officer Badge ID</label>
+          <input type="text" id="loginOfficerId" required value="ARUN-702" class="w-full px-3 py-2 rounded-lg border text-xs font-mono focus:ring-2 focus:ring-sky-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Access Passcode</label>
+          <input type="password" id="loginPassword" required value="••••••••" class="w-full px-3 py-2 rounded-lg border text-xs font-mono focus:ring-2 focus:ring-sky-500 focus:outline-none">
+        </div>
+        <button type="submit" class="w-full py-2.5 bg-[#0052cc] hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition shadow-xs">
+          Verify Credentials &amp; Access Dashboard
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: INGEST EVIDENCE -->
+  <div id="uploadModal" class="hidden fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-blue-50 text-[#0052cc] flex items-center justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-extrabold text-slate-900">Ingest Digital Evidence</h3>
+            <p class="text-[10px] text-slate-500 font-medium">Anchor Certificate, Chat Log, or CCTV Frame</p>
+          </div>
+        </div>
+        <button onclick="document.getElementById('uploadModal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 font-bold text-lg">&times;</button>
+      </div>
+
+      <form onsubmit="handleUpload(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Case Number</label>
+          <input type="text" id="regCaseId" required placeholder="e.g. CASE-2019-001" class="w-full px-3 py-2 rounded-lg border text-xs font-mono focus:ring-2 focus:ring-sky-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Evidence Type</label>
+          <select id="regDocType" class="w-full px-3 py-2 rounded-lg border text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none">
+            <option value="Certificate (PDF)">Certificate / Legal Document (PDF)</option>
+            <option value="WhatsApp Chat (TXT)">WhatsApp Messaging Log (TXT)</option>
+            <option value="CCTV Surveillance Frame">CCTV Surveillance Frame (JPG/JPEG/PNG)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Select File (PDF, TXT, JPG, PNG)</label>
+          <input type="file" id="regFile" required accept=".pdf,.txt,.log,.jpg,.jpeg,.png" class="w-full text-xs text-slate-500 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-[#0052cc] hover:file:bg-blue-100">
+        </div>
+        <button type="submit" id="regSubmitBtn" class="w-full py-2.5 bg-[#0052cc] hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition shadow-xs">
+          Compute SHA-256 &amp; Anchor on Blockchain
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: SECTION 63 BSA CERTIFICATE -->
+  <div id="sec63CertificateModal" class="hidden fixed inset-0 bg-slate-900/70 z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-xl max-w-3xl w-full p-8 shadow-2xl border-4 border-[#082046] my-8 font-serif">
+      
+      <div class="text-center border-b-2 border-slate-900 pb-4">
+        <img class="h-14 w-auto object-contain mx-auto mb-2" src="https://upload.wikimedia.org/wikipedia/commons/5/55/Emblem_of_India.svg" alt="Emblem">
+        <div class="text-xs font-bold tracking-widest uppercase text-slate-600">Schedule to the Bharatiya Sakshya Adhiniyam, 2023</div>
+        <h2 class="text-xl font-black text-slate-900 uppercase tracking-tight mt-0.5">Certificate under Section 63</h2>
+        <div class="text-xs text-slate-500 italic mt-0.5">Part A (Custodian Declaration) &amp; Part B (Cryptographic Expert Audit)</div>
+      </div>
+
+      <div class="py-6 space-y-4 text-xs text-slate-800 leading-relaxed">
+        <p>
+          I, <strong id="repOfficer">Arun</strong>, investigating officer of the designated cyber / forensic law enforcement authority, hereby certify under Section 63 of the Bharatiya Sakshya Adhiniyam, 2023 that the electronic record particulars detailed below were lawfully acquired and cryptographically verified:
+        </p>
+
+        <div class="border border-slate-300 rounded p-4 font-mono text-[11px] space-y-1.5 bg-slate-50">
+          <div><strong>Case Reference:</strong> <span id="repCaseId"></span></div>
+          <div><strong>Evidence File Name:</strong> <span id="repFileName"></span></div>
+          <div><strong>Media Classification:</strong> <span id="repDocType"></span></div>
+          <div><strong>Original Ledger Hash:</strong> <span id="repLedgerHash" class="break-all text-sky-800"></span></div>
+          <div><strong>Inspected File Hash:</strong> <span id="repCurrentHash" class="break-all text-slate-800"></span></div>
+          <div><strong>Registration Timestamp:</strong> <span id="repTimestamp"></span></div>
+        </div>
+
+        <div class="border-l-4 p-3.5 rounded" id="repVerdictBox">
+          <div class="font-bold text-xs uppercase font-sans" id="repVerdictTitle"></div>
+          <div class="text-[11px] mt-1 font-sans" id="repVerdictDesc"></div>
+        </div>
+
+        <p class="text-[11px] text-slate-600 italic">
+          Declaration: The electronic hashing apparatus operated properly throughout the custody lifecycle. The mathematical digest was verified against the immutable block ledger without manual override or data alteration.
+        </p>
+
+        <div class="pt-8 grid grid-cols-2 gap-12 text-center text-xs font-sans">
+          <div class="border-t border-slate-400 pt-2">
+            <div class="font-bold">Cryptographic Forensic Signature</div>
+            <div class="text-[10px] text-slate-500">SHA-256 / Ethereum Ledger Verified</div>
+          </div>
+          <div class="border-t border-slate-400 pt-2">
+            <div class="font-bold">Investigating / Certifying Officer</div>
+            <div class="text-[10px] text-slate-500">Ministry of Home Affairs, NDEMS Unit</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t pt-4 flex justify-end space-x-3 no-print font-sans">
+        <button onclick="document.getElementById('sec63CertificateModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg text-xs font-bold text-slate-600 hover:bg-slate-50">Close</button>
+        <button onclick="window.print()" class="px-5 py-2 bg-[#082046] hover:bg-[#0052cc] text-white rounded-lg text-xs font-bold transition flex items-center space-x-1.5 shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+          <span>Print Official Section 63 Certificate</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let currentVerificationData = null;
+    let allLoadedRecords = [];
+    let isOfficerLoggedIn = false;
+
+    // View Navigation Router
+    function showView(viewName) {
+      const allViews = ['publicLandingView', 'adminDashboardView', 'servicesView', 'resourcesView', 'helpView', 'contactView'];
+      allViews.forEach(v => document.getElementById(v).classList.add('hidden'));
+
+      const allNavBtns = ['navHomeBtn', 'navDashboardBtn', 'navServicesBtn', 'navResourcesBtn', 'navHelpBtn', 'navContactBtn'];
+      allNavBtns.forEach(b => {
+        const btn = document.getElementById(b);
+        btn.className = "hover:text-[#0052cc] pb-1 transition";
+      });
+
+      if (viewName === 'home') {
+        document.getElementById('publicLandingView').classList.remove('hidden');
+        document.getElementById('navHomeBtn').className = "text-[#0052cc] font-bold pb-1 transition border-b-2 border-[#0052cc]";
+      } else if (viewName === 'admin') {
+        document.getElementById('adminDashboardView').classList.remove('hidden');
+        document.getElementById('navDashboardBtn').className = "text-[#0052cc] font-bold pb-1 transition border-b-2 border-[#0052cc]";
+        loadLedger();
+      } else if (viewName === 'services') {
+        document.getElementById('servicesView').classList.remove('hidden');
+        document.getElementById('navServicesBtn').className = "text-[#0052cc] font-bold pb-1 transition border-b-2 border-[#0052cc]";
+      } else if (viewName === 'resources') {
+        document.getElementById('resourcesView').classList.remove('hidden');
+        document.getElementById('navResourcesBtn').className = "text-[#0052cc] font-bold pb-1 transition border-b-2 border-[#0052cc]";
+      } else if (viewName === 'help') {
+        document.getElementById('helpView').classList.remove('hidden');
+        document.getElementById('navHelpBtn').className = "text-[#0052cc] font-bold pb-1 transition border-b-2 border-[#0052cc]";
+      } else if (viewName === 'contact') {
+        document.getElementById('contactView').classList.remove('hidden');
+        document.getElementById('navContactBtn').className = "text-[#0052cc] font-bold pb-1 transition border-b-2 border-[#0052cc]";
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Modal & Login Flow
+    function openLoginModal() {
+      if (isOfficerLoggedIn) {
+        showView('admin');
+      } else {
+        document.getElementById('loginModal').classList.remove('hidden');
+      }
+    }
+
+    function checkAndOpenDashboard() {
+      if (isOfficerLoggedIn) {
+        showView('admin');
+      } else {
+        openLoginModal();
+      }
+    }
+
+    function handleOfficerLogin(e) {
+      e.preventDefault();
+      isOfficerLoggedIn = true;
+      document.getElementById('loginModal').classList.add('hidden');
+
+      const authBtn = document.getElementById('authActionBtn');
+      authBtn.className = "bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold px-3.5 py-2 rounded-lg shadow-xs flex items-center space-x-1.5 transition";
+      authBtn.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-300"></span><span>Officer: Arun</span>`;
+      authBtn.onclick = () => showView('admin');
+
+      document.getElementById('logoutActionBtn').classList.remove('hidden');
+      const badge = document.getElementById('authStatusBadge');
+      badge.innerText = "Officer: Arun (Active)";
+      badge.className = "inline-block bg-emerald-900 text-emerald-300 px-2.5 py-0.5 rounded font-mono text-[10px]";
+
+      showView('admin');
+    }
+
+    function handleLogout() {
+      isOfficerLoggedIn = false;
+      document.getElementById('logoutActionBtn').classList.add('hidden');
+
+      const authBtn = document.getElementById('authActionBtn');
+      authBtn.className = "bg-[#0052cc] hover:bg-blue-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg shadow-xs flex items-center space-x-1.5 transition";
+      authBtn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg><span>Login</span>`;
+      authBtn.onclick = openLoginModal;
+
+      const badge = document.getElementById('authStatusBadge');
+      badge.innerText = "Public Mode";
+      badge.className = "inline-block bg-slate-800 text-slate-300 px-2.5 py-0.5 rounded font-mono text-[10px]";
+
+      showView('home');
+      alert("Officer Arun logged out. Session returned to Public Mode.");
+    }
+
+    async function loadLedger() {
+      try {
+        const res = await fetch('/api/inventory');
+        const data = await res.json();
+        const tbody = document.getElementById('ledgerTableBody');
+        const badge = document.getElementById('ledgerCountBadge');
+        tbody.innerHTML = '';
+
+        if (!data.inventory || data.inventory.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="py-6 text-center text-slate-400 font-sans">No evidence records on blockchain ledger yet.</td></tr>';
+          badge.innerText = '0 Records';
+          allLoadedRecords = [];
+          return;
+        }
+
+        allLoadedRecords = data.inventory;
+        badge.innerText = `${data.inventory.length} Records`;
+        
+        data.inventory.forEach(item => {
+          const row = document.createElement('tr');
+          row.className = "hover:bg-slate-50 transition border-b border-slate-100";
+          row.innerHTML = `
+            <td class="py-2.5 px-3 font-bold text-[#0052cc]">${item.caseId}</td>
+            <td class="py-2.5 px-3">
+              <div class="font-sans font-bold text-slate-800">${item.fileName}</div>
+              <div class="text-[10px] text-slate-400 font-sans">${item.fileSize || 'N/A'}</div>
+            </td>
+            <td class="py-2.5 px-3 text-slate-600 font-sans">${item.docType || 'Digital Document'}</td>
+            <td class="py-2.5 px-3 text-slate-600 font-mono text-[10px]" title="${item.docHash}">${item.docHash.substring(0, 14)}...</td>
+            <td class="py-2.5 px-3 font-sans text-slate-700 font-medium">${item.officerName}</td>
+            <td class="py-2.5 px-3">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase font-sans">Admissible</span>
+            </td>
+            <td class="py-2.5 px-3 text-center space-x-2">
+              <button onclick="openRecordDirectReport('${item.caseId}')" class="px-2 py-1 bg-sky-50 text-sky-700 hover:bg-sky-100 rounded text-[10px] font-bold border border-sky-200 transition">
+                Report
+              </button>
+              <button onclick="deleteRecord('${item.caseId}')" class="px-2 py-1 bg-red-50 text-red-600 hover:bg-red-100 rounded text-[10px] font-bold border border-red-200 transition">
+                Delete
+              </button>
+            </td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function deleteRecord(caseId) {
+      if (!confirm(`Are you sure you want to delete Case [${caseId}] from the inventory?`)) return;
+      try {
+        const res = await fetch(`/api/record/${caseId}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+          alert(data.message);
+          loadLedger();
+        } else {
+          alert('Delete failed: ' + data.error);
+        }
+      } catch (e) {
+        alert('Server communication error.');
+      }
+    }
+
+    function openRecordDirectReport(caseId) {
+      const rec = allLoadedRecords.find(r => r.caseId.toLowerCase() === caseId.toLowerCase());
+      if (!rec) return;
+
+      currentVerificationData = {
+        caseId: rec.caseId,
+        fileName: rec.fileName,
+        docType: rec.docType,
+        originalHash: rec.docHash,
+        currentHash: rec.docHash,
+        timestamp: rec.timestamp,
+        officerName: rec.officerName,
+        isAuthentic: true
+      };
+      openSec63Report();
+    }
+
+    async function handleUpload(e) {
+      e.preventDefault();
+      const btn = document.getElementById('regSubmitBtn');
+      btn.disabled = true;
+      btn.innerText = "Anchoring to Blockchain...";
+
+      const formData = new FormData();
+      formData.append('caseId', document.getElementById('regCaseId').value);
+      formData.append('docType', document.getElementById('regDocType').value);
+      formData.append('document', document.getElementById('regFile').files[0]);
+
+      try {
+        const res = await fetch('/api/upload', { method: 'POST', body: formData });
+        const data = await res.json();
+        if (data.success) {
+          alert(`Evidence Registered Successfully!\nCase ID: ${data.caseId}\nSHA-256: ${data.docHash}`);
+          document.getElementById('uploadModal').classList.add('hidden');
+          document.getElementById('regCaseId').value = '';
+          document.getElementById('regFile').value = '';
+          loadLedger();
+        } else {
+          alert('Upload failed: ' + (data.error || 'Server error'));
+        }
+      } catch (err) {
+        alert('Server connection error');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Compute SHA-256 & Anchor on Blockchain";
+      }
+    }
+
+    async function handleVerify(e) {
+      e.preventDefault();
+      const btn = document.getElementById('vBtn');
+      btn.disabled = true;
+      btn.innerText = "Running Cryptographic Inspection...";
+
+      const formData = new FormData();
+      formData.append('caseId', document.getElementById('vCaseId').value);
+      formData.append('document', document.getElementById('vFile').files[0]);
+
+      try {
+        const res = await fetch('/api/verify', { method: 'POST', body: formData });
+        const data = await res.json();
+
+        if (!data.success) {
+          alert(data.message || data.error);
+          return;
+        }
+
+        currentVerificationData = data;
+
+        document.getElementById('emptyInspectBox').classList.add('hidden');
+        document.getElementById('inspectionResultBox').classList.remove('hidden');
+
+        const inspectBadge = document.getElementById('inspectBadge');
+        const vBanner = document.getElementById('verdictBanner');
+        const vTitle = document.getElementById('verdictTitle');
+        const vSubtitle = document.getElementById('verdictSubtitle');
+        const vTag = document.getElementById('verdictTag');
+
+        if (data.isAuthentic) {
+          inspectBadge.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 uppercase";
+          inspectBadge.innerText = "Audit Passed";
+
+          vBanner.className = "p-4 rounded-xl border border-emerald-300 bg-emerald-50/70 flex items-start justify-between";
+          vTitle.className = "text-sm font-extrabold uppercase tracking-wide text-emerald-900";
+          vTitle.innerText = "Cryptographic Integrity Verified: 100% Genuine";
+          vSubtitle.className = "text-xs mt-0.5 font-medium text-emerald-700";
+          vSubtitle.innerText = "Zero deviation in cryptographic hash. Admissible under Section 63 BSA.";
+          vTag.className = "text-[10px] font-mono font-bold px-2.5 py-1 rounded bg-emerald-600 text-white uppercase";
+          vTag.innerText = "Authentic";
+        } else {
+          inspectBadge.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800 uppercase";
+          inspectBadge.innerText = "Tampering Alert";
+
+          vBanner.className = "p-4 rounded-xl border border-rose-300 bg-rose-50/70 flex items-start justify-between";
+          vTitle.className = "text-sm font-extrabold uppercase tracking-wide text-rose-900";
+          vTitle.innerText = "RED ALERT: Evidence Compromised / Tampered";
+          vSubtitle.className = "text-xs mt-0.5 font-medium text-rose-700";
+          vSubtitle.innerText = "SHA-256 hash mismatch. File structure or content altered post-custody.";
+          vTag.className = "text-[10px] font-mono font-bold px-2.5 py-1 rounded bg-rose-600 text-white uppercase";
+          vTag.innerText = "Rejected";
+        }
+
+        document.getElementById('resDocType').innerText = data.docType;
+        document.getElementById('resLedgerHash').innerText = data.originalHash;
+        document.getElementById('resCurrentHash').innerText = data.currentHash;
+
+        // Structural Diagnostics Table
+        const fieldTbody = document.getElementById('fieldComparisonTbody');
+        fieldTbody.innerHTML = '';
+        data.inspectionPoints.forEach(f => {
+          const tr = document.createElement('tr');
+          const isOk = (f.status === "MATCHED" || f.status === "INTACT");
+          tr.innerHTML = `
+            <td class="py-1.5 px-3 font-semibold text-slate-800">${f.metric}</td>
+            <td class="py-1.5 px-3 font-mono text-slate-600">${f.original}</td>
+            <td class="py-1.5 px-3 font-mono ${isOk ? 'text-slate-800' : 'text-rose-600 font-bold'}">${f.inspected}</td>
+            <td class="py-1.5 px-3">
+              <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase ${isOk ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">${f.status}</span>
+            </td>
+          `;
+          fieldTbody.appendChild(tr);
+        });
+
+        // Findings
+        const issuesUl = document.getElementById('resIssuesList');
+        issuesUl.innerHTML = '';
+        data.issues.forEach(iss => {
+          const li = document.createElement('li');
+          li.className = data.isAuthentic ? "text-emerald-800 font-medium" : "text-rose-800 font-semibold";
+          li.innerText = iss;
+          issuesUl.appendChild(li);
+        });
+
+        // PII
+        const piiUl = document.getElementById('resPiiList');
+        piiUl.innerHTML = '';
+        data.piiAlerts.forEach(p => {
+          const li = document.createElement('li');
+          li.innerText = p;
+          piiUl.appendChild(li);
+        });
+
+        const repBtn = document.getElementById('openReportBtn');
+        repBtn.disabled = false;
+        repBtn.className = "w-full py-3 bg-[#082046] hover:bg-[#0052cc] text-white font-bold rounded-lg text-xs cursor-pointer transition flex items-center justify-center space-x-2 shadow-xs";
+
+      } catch (err) {
+        alert('Inspection request failed.');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Run Deep Cryptographic & Privacy Audit";
+      }
+    }
+
+    function openSec63Report() {
+      if (!currentVerificationData) return;
+      const d = currentVerificationData;
+
+      document.getElementById('repCaseId').innerText = d.caseId;
+      document.getElementById('repFileName').innerText = d.fileName;
+      document.getElementById('repDocType').innerText = d.docType;
+      document.getElementById('repLedgerHash').innerText = d.originalHash;
+      document.getElementById('repCurrentHash').innerText = d.currentHash;
+      document.getElementById('repTimestamp').innerText = d.timestamp;
+      document.getElementById('repOfficer').innerText = d.officerName || 'Arun';
+
+      const vBox = document.getElementById('repVerdictBox');
+      const vTitle = document.getElementById('repVerdictTitle');
+      const vDesc = document.getElementById('repVerdictDesc');
+
+      if (d.isAuthentic) {
+        vBox.className = "border-l-4 border-emerald-500 bg-emerald-50 p-3.5 rounded";
+        vTitle.className = "font-bold text-xs uppercase text-emerald-800 font-sans";
+        vTitle.innerText = "Legal Verdict: Fully Admissible under Section 63 BSA";
+        vDesc.innerText = "The electronic cryptographic digest matches the immutable blockchain record with zero deviation. Chain of custody is lawfully verified.";
+      } else {
+        vBox.className = "border-l-4 border-rose-500 bg-rose-50 p-3.5 rounded";
+        vTitle.className = "font-bold text-xs uppercase text-rose-800 font-sans";
+        vTitle.innerText = "Legal Verdict: INADMISSIBLE (Evidence Tampered / Compromised)";
+        vDesc.innerText = "Cryptographic integrity failure detected. The presented file deviates from the original registered ledger digest. Document rejected under Section 63.";
+      }
+
+      document.getElementById('sec63CertificateModal').classList.remove('hidden');
+    }
+
+    window.onload = () => showView('home');
+  </script>
+</body>
+</html>
