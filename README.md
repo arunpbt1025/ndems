@@ -1,4 +1,4 @@
-# NDEMS — National Digital Evidence Management System (PS-019)
+# NDEMS — National Digital Evidence Management System
 
 **Problem Statement PS-019:** Personal-Data Discovery and Privacy Evidence Inventory  
 **Team Code:** TC-072 | **Lead:** Arun Bharti  
