@@ -1,0 +1,82 @@
+[
+  {
+    "id": "OFF-001",
+    "name": "Arun Bharti",
+    "username": "arun.admin",
+    "password": "Admin@123",
+    "role": "Admin",
+    "badge": "DIR-NDEMS-01"
+  },
+  {
+    "id": "OFF-002",
+    "name": "Rajesh Sharma",
+    "username": "rajesh.inv",
+    "password": "Invest@123",
+    "role": "Investigator",
+    "badge": "INSP-CYB-102"
+  },
+  {
+    "id": "OFF-003",
+    "name": "Priya Verma",
+    "username": "priya.inv",
+    "password": "Invest@123",
+    "role": "Investigator",
+    "badge": "SI-CYB-108"
+  },
+  {
+    "id": "OFF-004",
+    "name": "Vikram Singh",
+    "username": "vikram.inv",
+    "password": "Invest@123",
+    "role": "Investigator",
+    "badge": "SI-AFU-204"
+  },
+  {
+    "id": "OFF-005",
+    "name": "Dr. K. Raman",
+    "username": "raman.forensic",
+    "password": "Forensic@123",
+    "role": "Forensic Officer",
+    "badge": "DFL-EXP-501"
+  },
+  {
+    "id": "OFF-006",
+    "name": "Ananya Roy",
+    "username": "ananya.forensic",
+    "password": "Forensic@123",
+    "role": "Forensic Officer",
+    "badge": "DFL-ANA-504"
+  },
+  {
+    "id": "OFF-007",
+    "name": "Suresh Raina",
+    "username": "suresh.forensic",
+    "password": "Forensic@123",
+    "role": "Forensic Officer",
+    "badge": "DFL-NET-509"
+  },
+  {
+    "id": "OFF-008",
+    "name": "Neha Gupta",
+    "username": "neha.auditor",
+    "password": "Audit@123",
+    "role": "Auditor",
+    "badge": "AUD-JUD-801"
+  },
+  {
+    "id": "OFF-009",
+    "name": "Amit Deshmukh",
+    "username": "amit.auditor",
+    "password": "Audit@123",
+    "role": "Auditor",
+    "badge": "AUD-BSA-805"
+  },
+  {
+    "id": "OFF-010",
+    "name": "Pooja Rao",
+    "username": "pooja.officer",
+    "password": "Officer@123",
+    "role": "Investigator",
+    "badge": "SI-ING-310"
+  }
+]
